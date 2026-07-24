@@ -1,12 +1,12 @@
-"""Actualiza el MOTD del server con la IP publica + puerto actuales.
+"""Updates the server MOTD with the current public IP + port.
 
-Asi los chicos ven la IP para conectarse directo en la lista de servers de Minecraft,
-sin que haya que avisarles a mano cada vez que cambia (IP dinamica).
+This way players see the IP to connect directly in the Minecraft server list,
+without needing to be told by hand every time it changes (dynamic IP).
 
-Corre ANTES de levantar el container: server.properties solo se lee al arrancar,
-asi que un cambio en caliente no se refleja hasta el proximo restart.
+Runs BEFORE the container starts: server.properties is only read at boot,
+so a hot change won't take effect until the next restart.
 
-Uso: python scripts/update_motd.py [puerto]
+Usage: python scripts/update_motd.py [port]
 """
 
 import re
@@ -29,7 +29,7 @@ def get_public_ip():
                     return service.GetExternalIPAddress()["NewExternalIPAddress"]
     except Exception:
         pass
-    # fallback si el router no responde por UPnP
+    # fallback if the router doesn't respond over UPnP
     return requests.get("https://api.ipify.org", timeout=5).text.strip()
 
 
@@ -50,4 +50,4 @@ if __name__ == "__main__":
         ip = get_public_ip()
         update_motd(ip, port)
     except Exception as exc:
-        print(f"[motd] WARNING: no se pudo actualizar el MOTD: {exc}")
+        print(f"[motd] WARNING: failed to update the MOTD: {exc}")

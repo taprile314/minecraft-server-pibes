@@ -1,21 +1,21 @@
 $fwRuleName = "Minecraft Voicechat (pibes) 24454 UDP"
 if (-not (Get-NetFirewallRule -DisplayName $fwRuleName -ErrorAction SilentlyContinue)) {
-    Write-Output "[firewall] Regla '$fwRuleName' no existe, pidiendo permisos para crearla (UAC)..."
+    Write-Output "[firewall] Rule '$fwRuleName' does not exist, requesting permission to create it (UAC)..."
     try {
         $script = 'New-NetFirewallRule -DisplayName "' + $fwRuleName + '" -Direction Inbound -Protocol UDP -LocalPort 24454 -Action Allow -Profile Domain,Private,Public | Out-Null'
         $encoded = [Convert]::ToBase64String([System.Text.Encoding]::Unicode.GetBytes($script))
         Start-Process powershell -Verb RunAs -Wait -ArgumentList "-NoProfile", "-EncodedCommand", $encoded -ErrorAction Stop
         if (Get-NetFirewallRule -DisplayName $fwRuleName -ErrorAction SilentlyContinue) {
-            Write-Output "[firewall] Regla creada OK"
+            Write-Output "[firewall] Rule created OK"
         } else {
-            Write-Warning "[firewall] No se pudo confirmar la creacion de la regla (se cancelo el UAC?)"
+            Write-Warning "[firewall] Could not confirm the rule was created (was UAC cancelled?)"
         }
     } catch {
-        Write-Warning "[firewall] No se pudo crear la regla de firewall automaticamente: $_"
-        # no cortamos el arranque del server por esto
+        Write-Warning "[firewall] Could not create the firewall rule automatically: $_"
+        # don't block server startup over this
     }
 } else {
-    Write-Output "[firewall] Regla '$fwRuleName' ya existe, OK"
+    Write-Output "[firewall] Rule '$fwRuleName' already exists, OK"
 }
 
 python scripts\upnp_forward.py 25569 TCP

@@ -46,7 +46,7 @@ services:
       - ./scripts:/app/scripts:ro
       - ./data/logs:/data/logs:ro
     env_file:
-      - .discord.env
+      - .env
     command: sh -c "pip install --no-cache-dir --quiet requests && python scripts/discord_notify.py"
     depends_on:
       - mc

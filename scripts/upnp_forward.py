@@ -1,7 +1,7 @@
-"""Abre (o renueva) un port forward via UPnP en el router para el server de Minecraft.
+"""Opens (or renews) a UPnP port forward on the router for the Minecraft server.
 
-Uso: python scripts/upnp_forward.py [puerto] [protocolo]
-Default: puerto 25569, protocolo TCP (matchea SERVER_PORT en docker-compose.yml).
+Usage: python scripts/upnp_forward.py [port] [protocol]
+Default: port 25569, protocol TCP (matches SERVER_PORT in docker-compose.yml).
 """
 
 import socket
@@ -29,7 +29,7 @@ def get_igd_service():
         for service in device.services:
             if "WANIPConn" in service.service_type or "WANPPPConn" in service.service_type:
                 return service
-    raise RuntimeError("No se encontró un router con soporte UPnP IGD en la red")
+    raise RuntimeError("No UPnP IGD-capable router found on the network")
 
 
 def forward_port(port, protocol=DEFAULT_PROTOCOL):
@@ -39,7 +39,7 @@ def forward_port(port, protocol=DEFAULT_PROTOCOL):
     try:
         igd.DeletePortMapping(NewRemoteHost="", NewExternalPort=port, NewProtocol=protocol)
     except Exception:
-        pass  # no había mapping previo, no pasa nada
+        pass  # no previous mapping, nothing to worry about
 
     igd.AddPortMapping(
         NewRemoteHost="",
@@ -60,5 +60,5 @@ if __name__ == "__main__":
     try:
         forward_port(port, protocol)
     except Exception as exc:
-        print(f"[upnp] WARNING: no se pudo abrir el puerto automáticamente: {exc}")
-        # no cortamos el arranque del server por esto
+        print(f"[upnp] WARNING: failed to open the port automatically: {exc}")
+        # don't block server startup over this

@@ -1,11 +1,11 @@
-"""Sigue data/logs/latest.log y notifica joins/leaves a un webhook de Discord.
+"""Tails data/logs/latest.log and notifies joins/leaves to a Discord webhook.
 
-Corre como proceso de larga duracion dentro del servicio `discord-notifier`
-de docker-compose.yml (no es parte de la secuencia de arranque en start.ps1).
+Runs as a long-lived process inside the `discord-notifier` service in
+docker-compose.yml (not part of the start.ps1 startup sequence).
 
-Config via variables de entorno (ver .discord.env / .discord.env.example):
-    DISCORD_WEBHOOK_URL   URL del webhook de Discord (obligatoria)
-    MC_LOG_PATH           ruta al log del server (default /data/logs/latest.log)
+Config via environment variables (see .env / .env.example):
+    DISCORD_WEBHOOK_URL   Discord webhook URL (required)
+    MC_LOG_PATH           path to the server log (default /data/logs/latest.log)
 """
 
 import os
@@ -27,12 +27,12 @@ def notify(message):
         response = requests.post(WEBHOOK_URL, json={"content": message}, timeout=10)
         response.raise_for_status()
     except Exception as exc:
-        print(f"[discord-notify] WARNING: no se pudo enviar a Discord: {exc}")
+        print(f"[discord-notify] WARNING: failed to send to Discord: {exc}")
 
 
 def follow(path):
     while not path.exists():
-        print(f"[discord-notify] esperando a que exista {path}...")
+        print(f"[discord-notify] waiting for {path} to exist...")
         time.sleep(5)
 
     file = path.open("r", encoding="utf-8", errors="replace")
@@ -50,9 +50,9 @@ def follow(path):
             current_size = path.stat().st_size
         except FileNotFoundError:
             continue
-        # el log se roto/trunco (restart del server): reabrir desde el principio
+        # log was rotated/truncated (server restart): reopen from the start
         if current_size < size:
-            print("[discord-notify] rotacion de log detectada, reabriendo")
+            print("[discord-notify] log rotation detected, reopening")
             file.close()
             file = path.open("r", encoding="utf-8", errors="replace")
         size = current_size
@@ -60,17 +60,17 @@ def follow(path):
 
 def main():
     if not WEBHOOK_URL:
-        raise RuntimeError("falta DISCORD_WEBHOOK_URL en el entorno")
+        raise RuntimeError("DISCORD_WEBHOOK_URL is missing from the environment")
 
-    print(f"[discord-notify] escuchando {LOG_PATH}")
+    print(f"[discord-notify] watching {LOG_PATH}")
     for line in follow(LOG_PATH):
         join = JOIN_RE.search(line)
         if join:
-            notify(f"**{join.group(1)}** se conecto al servidor")
+            notify(f"**{join.group(1)}** joined the server")
             continue
         leave = LEAVE_RE.search(line)
         if leave:
-            notify(f"**{leave.group(1)}** se desconecto del servidor")
+            notify(f"**{leave.group(1)}** left the server")
 
 
 if __name__ == "__main__":

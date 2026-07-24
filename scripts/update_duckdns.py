@@ -1,11 +1,11 @@
-"""Actualiza el registro DuckDNS con la IP publica actual.
+"""Updates the DuckDNS record with the current public IP.
 
-Lee dominio y token desde .duckdns.env en la raiz del proyecto:
+Reads domain and token from .env at the project root:
 
-    DOMAIN=mi-server
+    DOMAIN=my-server
     TOKEN=00000000-0000-0000-0000-000000000000
 
-Uso: python scripts/update_duckdns.py
+Usage: python scripts/update_duckdns.py
 """
 
 import sys
@@ -13,7 +13,7 @@ from pathlib import Path
 
 import requests
 
-ENV_PATH = Path(__file__).resolve().parent.parent / ".duckdns.env"
+ENV_PATH = Path(__file__).resolve().parent.parent / ".env"
 
 
 def load_env(path):
@@ -33,20 +33,20 @@ def update_duckdns(domain, token):
     response = requests.get(url, params=params, timeout=10)
     response.raise_for_status()
     if response.text.strip() != "OK":
-        raise RuntimeError(f"DuckDNS respondio '{response.text.strip()}'")
-    print(f"[duckdns] {domain}.duckdns.org actualizado")
+        raise RuntimeError(f"DuckDNS responded '{response.text.strip()}'")
+    print(f"[duckdns] {domain}.duckdns.org updated")
 
 
 if __name__ == "__main__":
     try:
         if not ENV_PATH.exists():
-            raise RuntimeError(f"no existe {ENV_PATH}, copia .duckdns.env.example y completalo")
+            raise RuntimeError(f"{ENV_PATH} does not exist, copy .env.example and fill it in")
         env = load_env(ENV_PATH)
         domain = env.get("DOMAIN")
         token = env.get("TOKEN")
         if not domain or not token:
-            raise RuntimeError(f"faltan DOMAIN/TOKEN en {ENV_PATH}")
+            raise RuntimeError(f"DOMAIN/TOKEN missing from {ENV_PATH}")
         update_duckdns(domain, token)
     except Exception as exc:
-        print(f"[duckdns] WARNING: no se pudo actualizar DuckDNS: {exc}")
-        # no cortamos el arranque del server por esto
+        print(f"[duckdns] WARNING: failed to update DuckDNS: {exc}")
+        # don't block server startup over this

@@ -2,6 +2,5 @@
 # whitelist/ops/ban lists, logs, downloaded mod jars and libraries. Not source.
 data/
 
-# Secrets - local config with real tokens/URLs. Only the .example templates are committed.
-.duckdns.env
-.discord.env
+# Secrets - local config with real tokens/URLs. Only the .example template is committed.
+.env
