@@ -1,0 +1,25 @@
+filename = 'headpats-1.0.7+26.2.jar'
+name = 'Headpat a Friend!'
+side = 'both'
+
+[download]
+hash = '8ba3e0f4ca6c890d327dae41070c803dba48616e955bd42ff998f86a78737cdeb76dc9ea5f60c5254e7650d596a72d69bdf60df356be67944af0264c32a7b990'
+hash-format = 'sha512'
+mode = 'url'
+url = 'https://cdn.modrinth.com/data/vETxChiy/versions/kq9IEA2S/headpats-1.0.7%2B26.2.jar'
+
+[update.modrinth]
+mod-id = 'vETxChiy'
+version = 'kq9IEA2S'
+
+[[x-prismlauncher-dependencies]]
+addonId = 'K01OU20C'
+type = 'EMBEDDED'
+
+[[x-prismlauncher-dependencies]]
+addonId = 'P7dR8mSH'
+type = 'REQUIRED'
+
+[[x-prismlauncher-dependencies]]
+addonId = 'IwCkru1D'
+type = 'REQUIRED'

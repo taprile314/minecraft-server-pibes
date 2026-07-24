@@ -1,0 +1,53 @@
+services:
+  mc:
+    image: itzg/minecraft-server
+    container_name: mc-server-pibes
+    tty: true
+    stdin_open: true
+    ports:
+      - "25569:25569"
+      - "24454:24454/udp" # Simple Voice Chat default port — keep separate from SERVER_PORT (mod warns UDP-on-server-port can crash query)
+    environment:
+      EULA: "TRUE"
+      TYPE: "FABRIC"
+      VERSION: "26.2"
+      MEMORY: "4G"
+      USE_MEOWICE_FLAGS: "TRUE"
+      ONLINE_MODE: "FALSE"
+      OPS: "gordo420"
+      DIFFICULTY: "hard"
+      SERVER_PORT: 25569
+      MODRINTH_DOWNLOAD_DEPENDENCIES: "required"
+      MODRINTH_PROJECTS: |
+        fabric-api
+        ping-wheel
+        skinsrestorer
+        lithium
+        ferrite-core
+        appleskin
+        spark?
+        simple-voice-chat
+        emotecraft:beta
+        player-animation-library
+        cicada
+        online-emotes:beta
+        headpat
+        datapack:tree-vein-miner
+        datapack:ly-graves
+        datapack:afk-display
+    volumes:
+      - ./data:/data
+    restart: unless-stopped
+  discord-notifier:
+    image: python:3.12-alpine
+    container_name: mc-discord-notifier
+    working_dir: /app
+    volumes:
+      - ./scripts:/app/scripts:ro
+      - ./data/logs:/data/logs:ro
+    env_file:
+      - .discord.env
+    command: sh -c "pip install --no-cache-dir --quiet requests && python scripts/discord_notify.py"
+    depends_on:
+      - mc
+    restart: unless-stopped
