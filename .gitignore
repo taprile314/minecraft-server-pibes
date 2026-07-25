@@ -2,5 +2,8 @@
 # whitelist/ops/ban lists, logs, downloaded mod jars and libraries. Not source.
 data/
 
+# World backups produced by the backup sidecar - runtime output, not source.
+backups/
+
 # Secrets - local config with real tokens/URLs. Only the .example template is committed.
 .env

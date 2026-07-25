@@ -27,7 +27,7 @@ Each helper script fails soft: if UPnP discovery, DuckDNS, the IP lookup, or the
 ## Configuration
 
 - `docker-compose.yml` is the source of truth for server settings: MC version, memory, difficulty, ops, and the mod list (`MODRINTH_PROJECTS`, installed automatically by the `itzg/minecraft-server` image from Modrinth slugs at container start).
-- `.env` (gitignored/local, not committed) holds `DOMAIN` and `TOKEN` for DuckDNS plus `DISCORD_WEBHOOK_URL` for the `discord-notifier` service, all in one file; `.env.example` shows the expected shape. `update_duckdns.py` reads it directly via its own parser (it runs on the host, not in a container); `discord-notifier` gets it via `docker-compose.yml`'s `env_file:`. One file, two different consumers — that's fine, each just ignores the keys it doesn't need.
+- `.env` (gitignored/local, not committed) holds `DOMAIN` and `TOKEN` for DuckDNS, `DISCORD_WEBHOOK_URL` for the `discord-notifier` service, and `RCON_PASSWORD` shared between the `mc` and `backup` services, all in one file; `.env.example` shows the expected shape. `update_duckdns.py` reads it directly via its own parser (it runs on the host, not in a container); `discord-notifier` and `backup` get it via `docker-compose.yml`'s `environment:`/`env_file:`. One file, several consumers — that's fine, each just ignores the keys it doesn't need.
 - `data/` is the volume mounted into the container (`./data:/data`) — it's the live server's working directory: world save, `server.properties`, `whitelist.json`, mods, logs, and the full Fabric/Minecraft library jars the server downloaded on first boot. Treat it as runtime state, not source — don't hand-edit files under `data/` except via the scripts above or well-understood Minecraft config files (`server.properties`, `whitelist.json`, `ops.json`). It's also gitignored: the repo is public, and `data/` is where the world save, ban/whitelist lists, and the live public IP (in `server.properties`' motd) actually live.
 
 ## Networking model
@@ -41,6 +41,16 @@ Port 24454 (UDP) follows the same path for the Simple Voice Chat mod, plus one e
 The `discord-notifier` service in `docker-compose.yml` is a sidecar container (`python:3.12-alpine`) running `scripts/discord_notify.py`. It tails `data/logs/latest.log` (mounted read-only) for "joined the game" / "left the game" lines and posts a message to a Discord webhook for each. It's a separate long-running container, not part of the `start.ps1` one-shot helper sequence — it starts and restarts independently via `docker compose up -d` / `restart: unless-stopped`, and only depends on the `mc` service existing (not on the log file being present yet — it polls for that).
 
 To enable it: copy `.env.example` to `.env` (if you haven't already for DuckDNS) and set `DISCORD_WEBHOOK_URL` to a webhook URL from the target Discord channel (channel settings → Integrations → Webhooks). No firewall/UPnP/DuckDNS changes are needed since this only makes outbound HTTPS calls to Discord.
+
+## World backups
+
+The `backup` service in `docker-compose.yml` is a sidecar container (`itzg/mc-backup`, the companion image to `itzg/minecraft-server`) that periodically archives the world save out of `data/` into `backups/` (host-mounted, gitignored — runtime output, not source). Like `discord-notifier`, it's a separate long-running container started by `docker compose up -d` alongside `mc`, not part of the `start.ps1` one-shot sequence.
+
+It talks to the server over RCON (`RCON_HOST: mc`, default port 25575, reached over the compose network — not exposed to the host or internet) to run `save-off`/`save-all`/`save-on` around each backup so the world isn't archived mid-write. This is why `mc` has `ENABLE_RCON: "TRUE"` and both `mc` and `backup` share `RCON_PASSWORD` from `.env`. Default schedule: a backup on startup, then every `BACKUP_INTERVAL` (24h), pruning archives older than `PRUNE_BACKUPS_DAYS` (7) — both are env vars on the `backup` service in `docker-compose.yml` if you want to change the cadence or retention.
+
+To restore: stop the `mc` container, extract the desired tarball from `backups/` over `data/` (or the relevant subset — world folder, etc.), then start `mc` again.
+
+To force an immediate backup without waiting for `BACKUP_INTERVAL` (e.g. before a risky change): `docker exec mc-backup backup now`. This runs a one-shot backup in parallel with the container's normal scheduled loop — safe to run anytime, they coordinate over an internal lockfile so they won't clobber each other.
 
 ## Client mod distribution (packwiz)
 
@@ -95,3 +105,7 @@ This runs before every launch: it re-reads `pack.toml`/`index.toml` from GitHub,
 ## Dependencies
 
 The Python scripts need `upnpclient` and `requests` (no requirements.txt/lockfile currently checked in — install ad hoc if running them standalone). Docker and Docker Compose are required to run the server itself. `packwiz` (the CLI, at `C:\Users\tomas\bin\packwiz.exe`) is only needed to edit `packwiz/` — not required to run the server.
+
+## Documenting new knowledge
+
+If, while working in this repo, you surface a non-obvious fact worth preserving (a gotcha, a decision and its reasoning, a recovery procedure, anything future-you or Claude would otherwise have to rediscover the hard way) and there's no existing place for it in this file, the README, or elsewhere in the repo, add it to `docs/` (create the directory if it doesn't exist yet) rather than letting it evaporate at the end of the session.

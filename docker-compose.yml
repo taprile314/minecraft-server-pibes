@@ -17,6 +17,8 @@ services:
       OPS: "gordo420"
       DIFFICULTY: "hard"
       SERVER_PORT: 25569
+      ENABLE_RCON: "TRUE"
+      RCON_PASSWORD: "${RCON_PASSWORD}"
       MODRINTH_DOWNLOAD_DEPENDENCIES: "required"
       MODRINTH_PROJECTS: |
         fabric-api
@@ -49,6 +51,20 @@ services:
     env_file:
       - .env
     command: sh -c "pip install --no-cache-dir --quiet requests && python scripts/discord_notify.py"
+    depends_on:
+      - mc
+    restart: unless-stopped
+  backup:
+    image: itzg/mc-backup
+    container_name: mc-backup
+    environment:
+      BACKUP_INTERVAL: "24h"
+      PRUNE_BACKUPS_DAYS: "7"
+      RCON_HOST: "mc"
+      RCON_PASSWORD: "${RCON_PASSWORD}"
+    volumes:
+      - ./data:/data:ro
+      - ./backups:/backups
     depends_on:
       - mc
     restart: unless-stopped
