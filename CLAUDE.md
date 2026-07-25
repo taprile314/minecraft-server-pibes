@@ -60,22 +60,22 @@ https://raw.githubusercontent.com/taprile314/minecraft-server-pibes/master/packw
 
 ### Updating the modlist
 
-`packwiz` (the CLI) isn't installed system-wide or checked into this repo — packwiz doesn't publish tagged GitHub releases, only CI build artifacts. Get a Windows build from the latest successful run of the `Go` workflow (id `60362`) in `packwiz/packwiz` on GitHub Actions:
-```
-gh api "repos/packwiz/packwiz/actions/workflows/60362/runs?branch=main&status=success&per_page=1" --jq '.workflow_runs[0].id'
-gh api "repos/packwiz/packwiz/actions/runs/<run-id>/artifacts" --jq '.artifacts[] | select(.name=="Windows 64-bit") | .id'
-gh api "repos/packwiz/packwiz/actions/artifacts/<artifact-id>/zip" > packwiz-win64.zip
-```
-(The `nightly.link` shortcut mentioned in packwiz's own docs can point at an expired/purged artifact — pulling the run/artifact IDs directly via `gh api` as above is the reliable path.)
-
-From inside `packwiz/`, with `packwiz.exe` on your PATH or referenced directly:
+`packwiz` (the CLI) is installed at `C:\Users\tomas\bin\packwiz.exe`, which is on PATH — just run `packwiz` from any shell. From inside `packwiz/`:
 ```
 packwiz modrinth add <slug>     # add a Modrinth mod
 packwiz curseforge add <slug>   # add a CurseForge mod
 packwiz remove <name>           # drop a mod — packwiz list shows current names
 packwiz refresh                 # recompute index.toml hashes after any manual edit under mods/
 ```
-Then `git commit` + `git push` — players don't do anything manually; see below.
+`packwiz modrinth/curseforge add` runs the refresh itself — you only need `packwiz refresh` after hand-editing a file under `mods/`. Then `git add packwiz/ && git commit && git push` — players don't do anything manually; see below.
+
+If the binary is ever missing (new machine, `C:\Users\tomas\bin` wiped, etc.): packwiz doesn't publish tagged GitHub releases, only CI build artifacts, so `nightly.link`'s cached redirect can point at an expired artifact. Pull the run/artifact IDs directly instead:
+```
+gh api "repos/packwiz/packwiz/actions/workflows/60362/runs?branch=main&status=success&per_page=1" --jq '.workflow_runs[0].id'
+gh api "repos/packwiz/packwiz/actions/runs/<run-id>/artifacts" --jq '.artifacts[] | select(.name=="Windows 64-bit") | .id'
+gh api "repos/packwiz/packwiz/actions/artifacts/<artifact-id>/zip" > packwiz-win64.zip
+```
+Extract `packwiz.exe` from the zip and drop it in `C:\Users\tomas\bin\` (already on PATH).
 
 ### How players install and get updates
 
@@ -92,4 +92,4 @@ This runs before every launch: it re-reads `pack.toml`/`index.toml` from GitHub,
 
 ## Dependencies
 
-The Python scripts need `upnpclient` and `requests` (no requirements.txt/lockfile currently checked in — install ad hoc if running them standalone). Docker and Docker Compose are required to run the server itself. `packwiz` (the CLI) is only needed to edit `packwiz/` — see above for how to fetch it; it's not required to run the server.
+The Python scripts need `upnpclient` and `requests` (no requirements.txt/lockfile currently checked in — install ad hoc if running them standalone). Docker and Docker Compose are required to run the server itself. `packwiz` (the CLI, at `C:\Users\tomas\bin\packwiz.exe`) is only needed to edit `packwiz/` — not required to run the server.
