@@ -77,6 +77,8 @@ gh api "repos/packwiz/packwiz/actions/artifacts/<artifact-id>/zip" > packwiz-win
 ```
 Extract `packwiz.exe` from the zip and drop it in `C:\Users\tomas\bin\` (already on PATH).
 
+Three project skills in `.claude/skills/` wrap this workflow: `/add-mod`, `/remove-mod`, and `/sync-prism-mods` (the last one reconciles `packwiz/` against whatever's actually installed in the Prism instance, for when a mod was added/removed by hand in Prism's own UI instead of through packwiz).
+
 ### How players install and get updates
 
 Players run **packwiz-installer-bootstrap.jar** (get it from the [packwiz-installer-bootstrap releases](https://github.com/packwiz/packwiz-installer-bootstrap/releases) — this one does have tagged releases, unlike `packwiz` itself) as a Prism Launcher pre-launch command. One-time setup per friend:
