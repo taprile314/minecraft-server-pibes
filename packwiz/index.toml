@@ -76,6 +76,11 @@ hash = "2767fa4374320cf4017e21ac630f31f18fb26489cb247b5c1d3bb7c8fef6e59e"
 metafile = true
 
 [[files]]
+file = "mods/immediatelyfast.pw.toml"
+hash = "4558d459a64d360ef8954016a272f690b45e74fe8f078388a5a6329e5fa973f6"
+metafile = true
+
+[[files]]
 file = "mods/iris.pw.toml"
 hash = "c821de05af5e6ceb83ea1c435ff63df6035dcffd24a6f05d2d0a15c672f95c6f"
 metafile = true
