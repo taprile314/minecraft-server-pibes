@@ -70,7 +70,7 @@ https://raw.githubusercontent.com/taprile314/minecraft-server-pibes/master/packw
 
 ### Updating the modlist
 
-`packwiz` (the CLI) is installed at `C:\Users\tomas\bin\packwiz.exe`, which is on PATH — just run `packwiz` from any shell. From inside `packwiz/`:
+`packwiz` (the CLI) is installed at `%USERPROFILE%\bin\packwiz.exe`, which is on PATH — just run `packwiz` from any shell. From inside `packwiz/`:
 ```
 packwiz modrinth add <slug>     # add a Modrinth mod
 packwiz curseforge add <slug>   # add a CurseForge mod
@@ -79,13 +79,13 @@ packwiz refresh                 # recompute index.toml hashes after any manual e
 ```
 `packwiz modrinth/curseforge add` runs the refresh itself — you only need `packwiz refresh` after hand-editing a file under `mods/`. Then `git add packwiz/ && git commit && git push` — players don't do anything manually; see below.
 
-If the binary is ever missing (new machine, `C:\Users\tomas\bin` wiped, etc.): packwiz doesn't publish tagged GitHub releases, only CI build artifacts, so `nightly.link`'s cached redirect can point at an expired artifact. Pull the run/artifact IDs directly instead:
+If the binary is ever missing (new machine, `%USERPROFILE%\bin` wiped, etc.): packwiz doesn't publish tagged GitHub releases, only CI build artifacts, so `nightly.link`'s cached redirect can point at an expired artifact. Pull the run/artifact IDs directly instead:
 ```
 gh api "repos/packwiz/packwiz/actions/workflows/60362/runs?branch=main&status=success&per_page=1" --jq '.workflow_runs[0].id'
 gh api "repos/packwiz/packwiz/actions/runs/<run-id>/artifacts" --jq '.artifacts[] | select(.name=="Windows 64-bit") | .id'
 gh api "repos/packwiz/packwiz/actions/artifacts/<artifact-id>/zip" > packwiz-win64.zip
 ```
-Extract `packwiz.exe` from the zip and drop it in `C:\Users\tomas\bin\` (already on PATH).
+Extract `packwiz.exe` from the zip and drop it in `%USERPROFILE%\bin\` (already on PATH).
 
 Three project skills in `.claude/skills/` wrap this workflow: `/add-mod`, `/remove-mod`, and `/sync-prism-mods` (the last one reconciles `packwiz/` against whatever's actually installed in the Prism instance, for when a mod was added/removed by hand in Prism's own UI instead of through packwiz).
 
@@ -104,7 +104,7 @@ This runs before every launch: it re-reads `pack.toml`/`index.toml` from GitHub,
 
 ## Dependencies
 
-The Python scripts need `upnpclient` and `requests` (no requirements.txt/lockfile currently checked in — install ad hoc if running them standalone). Docker and Docker Compose are required to run the server itself. `packwiz` (the CLI, at `C:\Users\tomas\bin\packwiz.exe`) is only needed to edit `packwiz/` — not required to run the server.
+The Python scripts need `upnpclient` and `requests` (no requirements.txt/lockfile currently checked in — install ad hoc if running them standalone). Docker and Docker Compose are required to run the server itself. `packwiz` (the CLI, at `%USERPROFILE%\bin\packwiz.exe`) is only needed to edit `packwiz/` — not required to run the server.
 
 ## Documenting new knowledge
 

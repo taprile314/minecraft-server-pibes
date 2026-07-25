@@ -5,7 +5,7 @@ description: Remove a mod from the pibes packwiz client modpack (packwiz/), then
 
 Removes a mod from `packwiz/`, the client-side modpack players fetch via `packwiz-installer-bootstrap.jar`. This is separate from the server's `MODRINTH_PROJECTS` in `docker-compose.yml` — don't touch that file unless the user explicitly asks to also drop it from the server.
 
-`packwiz` (the CLI) is installed at `C:\Users\tomas\bin\packwiz.exe`, on PATH.
+`packwiz` (the CLI) is installed at `%USERPROFILE%\bin\packwiz.exe`, on PATH.
 
 ## Steps
 

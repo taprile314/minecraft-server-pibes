@@ -5,12 +5,12 @@ description: Sync packwiz/ with whatever's actually installed in the pibes Prism
 
 The source of truth for the client modpack is normally `packwiz/` edited via `packwiz modrinth/curseforge add|remove` (see the `add-mod`/`remove-mod` skills). But sometimes the user installs or removes a mod directly through Prism Launcher's own UI first — this skill detects that drift and brings `packwiz/` in line with it.
 
-`packwiz` (the CLI) is installed at `C:\Users\tomas\bin\packwiz.exe`, on PATH.
+`packwiz` (the CLI) is installed at `%USERPROFILE%\bin\packwiz.exe`, on PATH.
 
 ## Where the source instance lives
 
 ```
-C:\Users\tomas\AppData\Roaming\PrismLauncher\instances\Forge optifine + iris 26.2\minecraft\mods\
+%APPDATA%\PrismLauncher\instances\Forge optifine + iris 26.2\minecraft\mods\
 ```
 
 (Despite the folder name, this instance — `instance.cfg` name `virgocueva` — is Fabric Loader `0.19.3` on MC `26.2`, matching the server and the packwiz pack.) If that path doesn't exist anymore, look for a sibling folder under `...\PrismLauncher\instances\*\minecraft\mods\.index\` and ask the user to confirm which instance is the right one before proceeding — don't guess silently if there's more than one plausible candidate.

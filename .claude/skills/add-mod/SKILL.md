@@ -5,7 +5,7 @@ description: Add a mod to the pibes packwiz client modpack (packwiz/) from Modri
 
 Adds a mod to `packwiz/`, the client-side modpack players fetch via `packwiz-installer-bootstrap.jar`. This is separate from the server's `MODRINTH_PROJECTS` in `docker-compose.yml` — don't touch that file unless the user explicitly asks for a server-side mod too.
 
-`packwiz` (the CLI) is installed at `C:\Users\tomas\bin\packwiz.exe`, on PATH. If it's missing, see the "Updating the modlist" section of `CLAUDE.md` for how to refetch it.
+`packwiz` (the CLI) is installed at `%USERPROFILE%\bin\packwiz.exe`, on PATH. If it's missing, see the "Updating the modlist" section of `CLAUDE.md` for how to refetch it.
 
 ## Steps
 
