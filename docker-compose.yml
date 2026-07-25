@@ -35,6 +35,7 @@ services:
         datapack:tree-vein-miner
         datapack:ly-graves
         datapack:afk-display
+        fastghast
     volumes:
       - ./data:/data
     restart: unless-stopped
