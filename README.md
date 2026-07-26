@@ -17,7 +17,7 @@ This repo has two independent parts:
 2. Download `packwiz-installer-bootstrap.jar` from the [packwiz-installer-bootstrap releases](https://github.com/packwiz/packwiz-installer-bootstrap/releases) and drop it into that instance's `minecraft/` folder.
 3. In Prism: **Edit Instance → Settings → Custom Commands** → enable → **Pre-launch command**:
    ```
-   "$INST_JAVA" -jar packwiz-installer-bootstrap.jar https://raw.githubusercontent.com/taprile314/minecraft-server-pibes/master/packwiz/pack.toml
+   "$INST_JAVA" -jar packwiz-installer-bootstrap.jar https://raw.githubusercontent.com/taprile314/minecraft-server-pibes/main/packwiz/pack.toml
    ```
 4. Save and launch the game. Mods download automatically the first time, and update automatically every time after that — without losing your settings or your saves.
 

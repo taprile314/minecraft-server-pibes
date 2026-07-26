@@ -6,7 +6,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 A self-hosted Minecraft (Fabric, MC 26.2) server for a private group of friends, run via Docker on a home machine behind a residential router. This is infrastructure/ops, not an application codebase — the "code" is a docker-compose file plus a few small Python helper scripts that make the server reachable from outside the LAN despite a dynamic public IP and NAT, plus a packwiz pack (see below) for distributing the client-side modlist to players.
 
-The repo is published publicly at `https://github.com/taprile314/minecraft-server-pibes` — public specifically so the packwiz pack can be fetched by players' launchers without authentication. `data/` (world save, server config/logs) and the real `.env` files are gitignored and never pushed; see `.gitignore`.
+The repo is published publicly at `https://github.com/taprile314/minecraft-server-pibes` (default branch `main`) — public specifically so the packwiz pack can be fetched by players' launchers without authentication. `data/` (world save, server config/logs) and the real `.env` files are gitignored and never pushed; see `.gitignore`.
 
 ## Running the server
 
@@ -65,7 +65,7 @@ Structure:
 
 The pack.toml players' installers point at:
 ```
-https://raw.githubusercontent.com/taprile314/minecraft-server-pibes/master/packwiz/pack.toml
+https://raw.githubusercontent.com/taprile314/minecraft-server-pibes/main/packwiz/pack.toml
 ```
 
 ### Updating the modlist
@@ -97,7 +97,7 @@ Players run **packwiz-installer-bootstrap.jar** (get it from the [packwiz-instal
 2. Drop `packwiz-installer-bootstrap.jar` into that instance's `minecraft/` folder.
 3. Edit Instance → Settings → Custom Commands → enable, Pre-launch command:
    ```
-   "$INST_JAVA" -jar packwiz-installer-bootstrap.jar https://raw.githubusercontent.com/taprile314/minecraft-server-pibes/master/packwiz/pack.toml
+   "$INST_JAVA" -jar packwiz-installer-bootstrap.jar https://raw.githubusercontent.com/taprile314/minecraft-server-pibes/main/packwiz/pack.toml
    ```
 
 This runs before every launch: it re-reads `pack.toml`/`index.toml` from GitHub, diffs by hash against what's installed, and adds/updates/removes only the tracked mod files — nothing outside `index.toml` (`config/`, `saves/`, `options.txt`, keybinds, resourcepacks, screenshots) is ever touched. That's the point of using packwiz over re-sharing a full instance: players get modlist updates without losing local progress or settings.
