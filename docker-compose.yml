@@ -8,6 +8,7 @@ services:
       - "25569:25569"
       - "24454:24454/udp" # Simple Voice Chat default port — keep separate from SERVER_PORT (mod warns UDP-on-server-port can crash query)
     environment:
+      TZ: "America/Argentina/Buenos_Aires"
       EULA: "TRUE"
       TYPE: "FABRIC"
       VERSION: "26.2"
@@ -45,6 +46,8 @@ services:
     image: python:3.12-alpine
     container_name: mc-discord-notifier
     working_dir: /app
+    environment:
+      TZ: "America/Argentina/Buenos_Aires"
     volumes:
       - ./scripts:/app/scripts:ro
       - ./data/logs:/data/logs:ro
@@ -58,13 +61,17 @@ services:
     image: itzg/mc-backup
     container_name: mc-backup
     environment:
-      BACKUP_INTERVAL: "24h"
-      PRUNE_BACKUPS_DAYS: "7"
+      TZ: "America/Argentina/Buenos_Aires"
+      BACKUP_METHOD: "restic"
+      RESTIC_PASSWORD: "${RESTIC_PASSWORD}"
+      RESTIC_REPOSITORY: "/backups"
+      PRUNE_RESTIC_RETENTION: "--keep-within 7d"
+      BACKUP_INTERVAL: "6h"
       RCON_HOST: "mc"
       RCON_PASSWORD: "${RCON_PASSWORD}"
     volumes:
       - ./data:/data:ro
-      - ./backups:/backups
+      - D:/mc-backups-pibes-restic:/backups
     depends_on:
       - mc
     restart: unless-stopped
