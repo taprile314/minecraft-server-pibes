@@ -20,9 +20,6 @@ services:
       SERVER_PORT: 25569
       ENABLE_RCON: "TRUE"
       RCON_PASSWORD: "${RCON_PASSWORD}"
-      RESOURCE_PACK: "https://cdn.modrinth.com/data/mdBvgTLC/versions/CugWOYRq/Pool-Resourcepack-Squid-Workshop-1.21plus.zip"
-      RESOURCE_PACK_SHA1: "c012b2fc189004477f7fa571a914b94655073859"
-      RESOURCE_PACK_ENFORCE: "FALSE"
       MODRINTH_DOWNLOAD_DEPENDENCIES: "required"
       MODRINTH_PROJECTS: |
         fabric-api
@@ -51,7 +48,6 @@ services:
         datapack:health-indicator
         datapack:spawn-animations
         datapack:vanilla-backpacks
-        datapack:pool-and-billiards
         fastghast
     volumes:
       - ./data:/data

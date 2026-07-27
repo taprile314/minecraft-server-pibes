@@ -164,8 +164,3 @@ metafile = true
 file = "mods/xaeros-world-map.pw.toml"
 hash = "6536c6957024a28933c6ceb8d958c69238f784cc2c42ba86930646d674a40350"
 metafile = true
-
-[[files]]
-file = "resourcepacks/pool-and-billiards-resourcepack.pw.toml"
-hash = "f9bd23ea30d5c32b03123879901264142d8a78d459ff8f74084eb3a0ca49e883"
-metafile = true
