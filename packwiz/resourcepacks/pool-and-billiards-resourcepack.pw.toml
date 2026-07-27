@@ -1,0 +1,13 @@
+name = "Pool and Billiards Resourcepack"
+filename = "Pool-Resourcepack-Squid-Workshop-1.21plus.zip"
+side = "client"
+
+[download]
+url = "https://cdn.modrinth.com/data/mdBvgTLC/versions/CugWOYRq/Pool-Resourcepack-Squid-Workshop-1.21plus.zip"
+hash-format = "sha512"
+hash = "c11bc5383b98bc059c94c74271ecd1f6a07cd0d495bd4a1717fd3f020c4faa313035974b23dd9e763166ee5a918e9ea6f83798943dd9e1c2b0488eca9d3abf87"
+
+[update]
+[update.modrinth]
+mod-id = "mdBvgTLC"
+version = "CugWOYRq"
