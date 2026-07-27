@@ -151,6 +151,11 @@ hash = "d3dd39888de21da6edc87b92935bda775dfee22215208f1d0740b2ac84337255"
 metafile = true
 
 [[files]]
+file = "mods/vanilla-backpacks.pw.toml"
+hash = "aa7b610a63f6006ccb710c3c053f54236906914bdb9a6687fe893abfdd478ac3"
+metafile = true
+
+[[files]]
 file = "mods/xaeros-minimap.pw.toml"
 hash = "95b15676aa22b778f4ddf0d710f9499e7e38fae4e5d610c6407eadf4e0d9a0d5"
 metafile = true
